@@ -36,6 +36,10 @@ class ProductImageSerializer(serializers.ModelSerializer):
 
 class ListProductSerializer(serializers.ModelSerializer):
     images = serializers.SerializerMethodField()
+    category = serializers.SerializerMethodField()
+
+    def get_category(self, obj):
+        return obj.category.title
 
     def get_images(self, obj):
         i_qs = ProductImage.objects.filter(product=obj)
@@ -45,7 +49,7 @@ class ListProductSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Product
-        fields = ["title", "slug", "price", "images"]
+        fields = ["title", "slug", "price", "images", "category"]
 
 
 class DetailProductSerializer(serializers.ModelSerializer):

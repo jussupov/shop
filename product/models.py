@@ -37,7 +37,9 @@ class ProductSpecValues(TimeModel):
     category_spec_types = models.ForeignKey(
         CategorySpecTypes, on_delete=models.CASCADE, related_name="spec"
     )
-    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    product = models.ForeignKey(
+        Product, on_delete=models.CASCADE, related_name="specification"
+    )
     value = models.CharField(max_length=255)
 
     def __str__(self):

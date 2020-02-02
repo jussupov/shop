@@ -5,9 +5,27 @@ from category.serializers import CategorySerailzer
 
 
 class ParentCategorySerializer(serializers.ModelSerializer):
+    parent = serializers.SerializerMethodField()
+
+    def get_parent(self, obj):
+        if obj.parent:
+            cat = ParentCategorySerializer(obj.parent)
+            return cat.data
+
     class Meta:
         model = Category
-        fields = ("slug", "title")
+        fields = ("slug", "title", "parent")
+
+
+class SpecificationSerialzer(serializers.ModelSerializer):
+    parametr = serializers.SerializerMethodField()
+
+    def get_parametr(self, obj):
+        return obj.category_spec_types.title
+
+    class Meta:
+        model = ProductSpecValues
+        fields = ("value", "parametr")
 
 
 class ProductImageSerializer(serializers.ModelSerializer):
@@ -16,26 +34,43 @@ class ProductImageSerializer(serializers.ModelSerializer):
         fields = ("image",)
 
 
-class ProductSerializer(serializers.ModelSerializer):
+class ListProductSerializer(serializers.ModelSerializer):
+    images = serializers.SerializerMethodField()
 
-    images = ProductImageSerializer(many=True)
-    category = serializers.SerializerMethodField()
+    def get_images(self, obj):
+        i_qs = ProductImage.objects.filter(product=obj)
+        if len(i_qs) == 0:
+            return None
+        return ProductImageSerializer(i_qs, many=True).data
 
-    def get_category(self, obj):
-        cat_serializer = ParentCategorySerializer(obj.category)
-        return cat_serializer.data
+    class Meta:
+        model = Product
+        fields = ["title", "slug", "price", "images"]
+
+
+class DetailProductSerializer(serializers.ModelSerializer):
+
+    images = serializers.SerializerMethodField()
+    category = ParentCategorySerializer()
+    specification = SpecificationSerialzer(many=True)
+
+    def get_images(self, obj):
+        i_qs = ProductImage.objects.filter(product=obj)
+        if len(i_qs) == 0:
+            return None
+        return ProductImageSerializer(i_qs, many=True).data
 
     class Meta:
         model = Product
         fields = [
             "title",
             "slug",
-            "images",
             "category",
+            "images",
             "description",
             "box_quantity",
             "price",
+            "specification",
         ]
-        depth = 1
-        lookup_field = "slug"
 
+        lookup_field = "slug"

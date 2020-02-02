@@ -16,6 +16,6 @@ class CategoryView(ModelViewSet):
     permission_classes = (IsAdminOrReadOnly,)
 
     def retrieve(self, request, slug=None):
-        queryset = Category.objects.filter(parent__slug=slug)
+        queryset = Category.objects.filter(slug=slug)
         serializer = CategorySerailzer(queryset, many=True)
         return Response(serializer.data)

@@ -29,6 +29,7 @@ INSTALLED_APPS = [
     # INSTALLED APP's
     "rest_framework",
     "drf_yasg",
+    "django_filters",
     # PROJECT APP's
     "category",
     "product",

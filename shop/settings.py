@@ -29,13 +29,20 @@ INSTALLED_APPS = [
     # INSTALLED APP's
     "rest_framework",
     "drf_yasg",
+    "phonenumber_field",
     "django_filters",
     # PROJECT APP's
     "category",
     "product",
     "utilities",
+    "cart",
+    "account",
 ]
 
+# AUTHENTICATION_BACKENDS = (
+#     "django.contrib.auth.backends.RemoteUserBackend",
+#     "django.contrib.auth.backends.ModelBackend",
+# )
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
@@ -80,6 +87,8 @@ DATABASES = {
         "PORT": "5432",
     }
 }
+
+AUTH_USER_MODEL = "account.User"
 
 
 # Password validation

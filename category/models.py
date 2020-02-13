@@ -18,9 +18,9 @@ class Category(BaseModel):
 
     def save(self, *args, **kwargs):
         title = translit(self.title, reversed=True)
-        if self.parent.slug:
+        try:
             self.slug = f"{self.parent.slug}-{slugify(title)}"
-        else:
+        except Exception:
             self.slug = slugify(title)
         super(BaseModel, self).save(*args, **kwargs)
 

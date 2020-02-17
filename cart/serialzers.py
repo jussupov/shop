@@ -4,6 +4,9 @@ from product.serializers import ListProductSerializer
 
 
 class CartItemSerialzer(serializers.ModelSerializer):
+
+    product = ListProductSerializer()
+
     class Meta:
         model = CartItem
-        fields = "__all__"
+        fields = ("product", "qunatity")

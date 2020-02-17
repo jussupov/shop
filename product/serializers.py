@@ -10,7 +10,7 @@ class ParentCategorySerializer(serializers.ModelSerializer):
     def get_parent(self, obj):
         if obj.parent:
             cat = ParentCategorySerializer(obj.parent)
-            return [cat.data]
+            return cat.data
 
     class Meta:
         model = Category

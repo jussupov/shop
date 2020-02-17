@@ -7,6 +7,7 @@ from django.contrib.auth.models import (
 )
 from phonenumber_field.modelfields import PhoneNumberField
 from .managers import UserManager
+from django.dispatch.dispatcher import receiver
 
 
 class User(AbstractBaseUser):

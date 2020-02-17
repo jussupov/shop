@@ -28,7 +28,9 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     # INSTALLED APP's
     "rest_framework",
+    "rest_framework.authtoken",
     "drf_yasg",
+    "djoser",
     "phonenumber_field",
     "django_filters",
     # PROJECT APP's
@@ -38,6 +40,14 @@ INSTALLED_APPS = [
     "cart",
     "account",
 ]
+
+REST_FRAMEWORK = {
+    "DEFAULT_AUTHENTICATION_CLASSES": (
+        "rest_framework.authentication.TokenAuthentication",
+        "rest_framework.authentication.SessionAuthentication",
+    ),
+}
+
 
 # AUTHENTICATION_BACKENDS = (
 #     "django.contrib.auth.backends.RemoteUserBackend",

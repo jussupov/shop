@@ -31,6 +31,7 @@ INSTALLED_APPS = [
     "rest_framework.authtoken",
     "drf_yasg",
     "djoser",
+    "corsheaders",
     "phonenumber_field",
     "django_filters",
     # PROJECT APP's
@@ -54,6 +55,8 @@ MIDDLEWARE = [
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
+    "corsheaders.middleware.CorsMiddleware",
+    "django.middleware.common.CommonMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
@@ -141,4 +144,6 @@ EMAIL_HOST_USER = "jus.kz09@gmail.com"
 EMAIL_HOST_PASSWORD = "a8765432"
 
 CELERY_BROKER_URL = "redis://localhost:6379"
+CORS_ORIGIN_ALLOW_ALL = True
+
 

@@ -3,8 +3,12 @@ from .models import Cart, CartItem
 
 
 class CartAdmin(admin.ModelAdmin):
-    pass
+    list_display = ("user", "is_active")
 
 
-admin.site.register(Cart)
-admin.site.register(CartItem)
+class CartItemAdmin(admin.ModelAdmin):
+    list_display = ("cart", "product", "quantity")
+
+
+admin.site.register(Cart, CartAdmin)
+admin.site.register(CartItem, CartItemAdmin)

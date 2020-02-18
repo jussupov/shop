@@ -49,10 +49,6 @@ REST_FRAMEWORK = {
 }
 
 
-# AUTHENTICATION_BACKENDS = (
-#     "django.contrib.auth.backends.RemoteUserBackend",
-#     "django.contrib.auth.backends.ModelBackend",
-# )
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
@@ -135,4 +131,14 @@ STATIC_ROOT = os.path.join(BASE_DIR, "static")
 
 MEDIA_URL = "/media/"
 MEDIA_ROOT = os.path.join(BASE_DIR, "media")
+
+
+EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+EMAIL_HOST = "smtp.gmail.com"
+EMAIL_USE_TLS = True
+EMAIL_PORT = 587
+EMAIL_HOST_USER = "jus.kz09@gmail.com"
+EMAIL_HOST_PASSWORD = "a8765432"
+
+CELERY_BROKER_URL = "redis://localhost:6379"
 

@@ -1,13 +1,13 @@
 from django.db import models
 from django.contrib.auth.models import (
     AbstractBaseUser,
-    AbstractUser,
     BaseUserManager,
     PermissionsMixin,
 )
 from phonenumber_field.modelfields import PhoneNumberField
 from .managers import UserManager
 from django.dispatch.dispatcher import receiver
+from utilities.task import email
 
 
 class User(AbstractBaseUser):
@@ -46,3 +46,7 @@ class User(AbstractBaseUser):
         # Simplest possible answer: Yes, always
         return True
 
+
+@receiver(models.signals.post_save, sender=User)
+def send_code(sender, instance, **kwargs):
+    email.delay(instance.email, "qwer")

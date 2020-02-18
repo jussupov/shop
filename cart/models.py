@@ -1,7 +1,7 @@
 from django.db import models
+from utilities.models import TimeAndActiveModel, TimeModel
 from account.models import User
 from product.models import Product
-from utilities.models import TimeAndActiveModel, TimeModel
 
 
 class Cart(TimeAndActiveModel):
@@ -13,5 +13,7 @@ class Cart(TimeAndActiveModel):
 
 class CartItem(TimeModel):
     cart = models.ForeignKey(Cart, on_delete=models.CASCADE)
-    product = models.ForeignKey(Product, on_delete=models.CASCADE)
-    qunatity = models.PositiveIntegerField(default=1)
+    product = models.ForeignKey(
+        Product, on_delete=models.CASCADE, related_name="product"
+    )
+    quantity = models.PositiveIntegerField(default=1)

@@ -8,7 +8,7 @@ from celery import shared_task
 def email(to_email, code):
     subject = "Регистрация на сайте onlineshop.kz"
 
-    from_email = settings.EMAIL_HOST_USER
+    from_email = "support@onlineshop.kz"
     recipient_list = [
         to_email,
     ]

@@ -28,7 +28,9 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     # INSTALLED APP's
     "rest_framework",
+    "rest_framework.authtoken",
     "drf_yasg",
+    "djoser",
     "corsheaders",
     "phonenumber_field",
     "django_filters",
@@ -40,10 +42,14 @@ INSTALLED_APPS = [
     "account",
 ]
 
-# AUTHENTICATION_BACKENDS = (
-#     "django.contrib.auth.backends.RemoteUserBackend",
-#     "django.contrib.auth.backends.ModelBackend",
-# )
+REST_FRAMEWORK = {
+    "DEFAULT_AUTHENTICATION_CLASSES": (
+        "rest_framework.authentication.TokenAuthentication",
+        "rest_framework.authentication.SessionAuthentication",
+    ),
+}
+
+
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
@@ -130,5 +136,14 @@ MEDIA_URL = "/media/"
 MEDIA_ROOT = os.path.join(BASE_DIR, "media")
 
 
+EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+EMAIL_HOST = "smtp.gmail.com"
+EMAIL_USE_TLS = True
+EMAIL_PORT = 587
+EMAIL_HOST_USER = "jus.kz09@gmail.com"
+EMAIL_HOST_PASSWORD = "a8765432"
+
+CELERY_BROKER_URL = "redis://localhost:6379"
 CORS_ORIGIN_ALLOW_ALL = True
+
 

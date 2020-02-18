@@ -1,9 +1,9 @@
 from django.contrib import admin
-from .models import CategorySpecTypes, Product, ProductImage, ProductSpecValues
+from .models import Product, Specification, ProductSpecifications, Photo
 
 
-admin.site.register(CategorySpecTypes)
+admin.site.register(ProductSpecifications)
 admin.site.register(Product)
-admin.site.register(ProductImage)
-admin.site.register(ProductSpecValues)
+admin.site.register(Specification)
+admin.site.register(Photo)
 

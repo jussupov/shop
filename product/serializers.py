@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Product, ProductImage, ProductSpecValues, CategorySpecTypes
+from .models import Product, Photo, Specification, ProductSpecifications
 from category.models import Category
 from category.serializers import CategorySerailzer
 
@@ -24,13 +24,13 @@ class SpecificationSerialzer(serializers.ModelSerializer):
         return obj.category_spec_types.title
 
     class Meta:
-        model = ProductSpecValues
+        model = ProductSpecifications
         fields = ("value", "parametr")
 
 
 class ProductImageSerializer(serializers.ModelSerializer):
     class Meta:
-        model = ProductImage
+        model = Photo
         fields = ("image",)
 
 
@@ -42,7 +42,7 @@ class ListProductSerializer(serializers.ModelSerializer):
         return obj.category.title
 
     def get_images(self, obj):
-        i_qs = ProductImage.objects.filter(product=obj)
+        i_qs = Photo.objects.filter(product=obj)
         if len(i_qs) == 0:
             return None
         return ProductImageSerializer(i_qs, many=True).data
@@ -59,10 +59,10 @@ class DetailProductSerializer(serializers.ModelSerializer):
     specification = SpecificationSerialzer(many=True)
 
     def get_images(self, obj):
-        i_qs = ProductImage.objects.filter(product=obj)
+        i_qs = Photo.objects.filter(product=obj)
         if len(i_qs) == 0:
             return None
-        return ProductImageSerializer(i_qs, many=True).data
+        return ImageSerializer(i_qs, many=True).data
 
     class Meta:
         model = Product

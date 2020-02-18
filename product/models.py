@@ -1,6 +1,6 @@
 from django.db import models
-from category.models import Category
 from utilities.models import TimeAndActiveModel, BaseModel, TimeModel
+from category.models import Category
 
 
 class Product(BaseModel):
@@ -15,7 +15,7 @@ class Product(BaseModel):
         return f"{self.category} / {self.title}"
 
 
-class ProductImage(TimeModel):
+class Photo(TimeModel):
     product = models.ForeignKey(
         Product, on_delete=models.CASCADE, related_name="images"
     )
@@ -25,7 +25,7 @@ class ProductImage(TimeModel):
         return f"{self.product} --> {self.image}"
 
 
-class CategorySpecTypes(TimeModel):
+class Specification(TimeModel):
     category = models.ForeignKey(Category, on_delete=models.CASCADE)
     title = models.CharField(max_length=255)
 
@@ -33,9 +33,9 @@ class CategorySpecTypes(TimeModel):
         return f"{self.category} | {self.title}"
 
 
-class ProductSpecValues(TimeModel):
+class ProductSpecifications(TimeModel):
     category_spec_types = models.ForeignKey(
-        CategorySpecTypes, on_delete=models.CASCADE, related_name="spec"
+        Specification, on_delete=models.CASCADE, related_name="spec"
     )
     product = models.ForeignKey(
         Product, on_delete=models.CASCADE, related_name="specification"

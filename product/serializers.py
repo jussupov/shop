@@ -62,7 +62,7 @@ class DetailProductSerializer(serializers.ModelSerializer):
         i_qs = Photo.objects.filter(product=obj)
         if len(i_qs) == 0:
             return None
-        return ImageSerializer(i_qs, many=True).data
+        return ProductImageSerializer(i_qs, many=True).data
 
     class Meta:
         model = Product

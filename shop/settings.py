@@ -19,14 +19,14 @@ ALLOWED_HOSTS = ["*"]
 # Application definition
 
 INSTALLED_APPS = [
-    # DEFAULT APP's
+    # DEFAULT APPS
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-    # INSTALLED APP's
+    # INSTALLED APPS
     "rest_framework",
     "rest_framework.authtoken",
     "drf_yasg",
@@ -34,12 +34,13 @@ INSTALLED_APPS = [
     "corsheaders",
     "phonenumber_field",
     "django_filters",
-    # PROJECT APP's
+    # PROJECT APPS
     "category",
     "product",
     "utilities",
     "cart",
     "account",
+    "order",
 ]
 
 REST_FRAMEWORK = {
@@ -51,16 +52,16 @@ REST_FRAMEWORK = {
 
 
 MIDDLEWARE = [
-    "django.middleware.security.SecurityMiddleware",
-    "django.contrib.sessions.middleware.SessionMiddleware",
-    "django.middleware.common.CommonMiddleware",
-    "django.middleware.csrf.CsrfViewMiddleware",
     "corsheaders.middleware.CorsMiddleware",
     "django.middleware.common.CommonMiddleware",
+    "django.middleware.security.SecurityMiddleware",
+    "django.contrib.sessions.middleware.SessionMiddleware",
+    "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
-    "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    # "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
+
 
 ROOT_URLCONF = "shop.urls"
 
@@ -126,6 +127,8 @@ USE_L10N = True
 
 USE_TZ = True
 
+CORS_ORIGIN_ALLOW_ALL = True
+
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.2/howto/static-files/
@@ -147,6 +150,4 @@ EMAIL_HOST_PASSWORD = SENDGRID_API_KEY
 CELERY_BROKER_URL = "redis://localhost:6379/0"
 CELERY_ACCEPT_CONTENT = ["json"]
 CELERY_TASK_SERIALIZER = "json"
-CORS_ORIGIN_ALLOW_ALL = True
-
 

@@ -1,7 +1,7 @@
 from django.db import models
 from utilities.models import BaseModel
 from transliterate import translit
-from django.template.defaultfilters import slugify
+from pytils.translit import slugify
 
 
 class Category(BaseModel):
@@ -17,11 +17,11 @@ class Category(BaseModel):
         )
 
     def save(self, *args, **kwargs):
-        title = translit(self.title, reversed=True)
+        # title = translit(self.title, reversed=True)
         try:
-            self.slug = f"{self.parent.slug}-{slugify(title)}"
+            self.slug = f"{self.parent.slug}-{slugify(self.title)}"
         except Exception:
-            self.slug = slugify(title)
+            self.slug = slugify(self.title)
         super(BaseModel, self).save(*args, **kwargs)
 
     def __str__(self):

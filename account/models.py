@@ -7,7 +7,9 @@ from django.contrib.auth.models import (
 from phonenumber_field.modelfields import PhoneNumberField
 from .managers import UserManager
 from django.dispatch.dispatcher import receiver
-from utilities.task import email
+from django.conf import settings
+from celery import shared_task
+from django.core.mail import send_mail
 
 
 class User(AbstractBaseUser):
@@ -47,6 +49,19 @@ class User(AbstractBaseUser):
         return True
 
 
+@shared_task()
+def send(email):
+    send_mail(
+        "Subject here",
+        "Here is the message.",
+        "webmaster@localhost",
+        email,
+        fail_silently=False,
+    )
+
+
 @receiver(models.signals.post_save, sender=User)
 def send_code(sender, instance, **kwargs):
-    email.delay(instance.email, "qwer")
+    arr = []
+    arr.append(instance.email)
+    send.delay(arr)

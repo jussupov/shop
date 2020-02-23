@@ -8,20 +8,19 @@ from requests.auth import HTTPBasicAuth
 from shop import settings
 
 
-@shared_task()
-def email(to_email, code):
-    subject = "Регистрация на сайте onlineshop.kz"
+# @shared_task()
+# def email(to_email, code):
+#     subject = "Регистрация на сайте onlineshop.kz"
 
-    from_email = settings.EMAIL_HOST_USER
-    recipient_list = [
-        to_email,
-    ]
-    text_content = f"Welcome code is {code}."
-    html_content = f"<p>Welcome code is <strong>{code}</strong>.</p>"
-    print("hello")
-    msg = EmailMultiAlternatives(subject, text_content, from_email, recipient_list)
-    msg.attach_alternative(html_content, "text/html")
-    msg.send()
+#     from_email = "webmaster@localhost"
+#     recipient_list = [
+#         to_email,
+#     ]
+#     text_content = f"Welcome code is {code}."
+#     html_content = f"<p>Welcome code is <strong>{code}</strong>.</p>"
+#     msg = EmailMultiAlternatives(subject, text_content, from_email, recipient_list)
+#     msg.attach_alternative(html_content, "text/html")
+#     msg.send()
 
 
 merchant_id = settings.MERCHANT_ID

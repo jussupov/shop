@@ -10,4 +10,5 @@ router.register("category", CategoryView, basename="category")
 router.register("cart", CartView, basename="cart")
 router.register("order", OrderView, basename="order")
 
+
 urlpatterns = [path("", include(router.urls))]

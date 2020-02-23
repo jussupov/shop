@@ -152,3 +152,6 @@ CELERY_BROKER_URL = "redis://localhost:6379/0"
 CELERY_ACCEPT_CONTENT = ["json"]
 CELERY_TASK_SERIALIZER = "json"
 
+MERCHANT_ID = 525768
+INCOME_SECRET_KEY = "9w9mb2QELG2SKReN"
+PAY_BOX_URL = "https://api.paybox.money/v4/payments"

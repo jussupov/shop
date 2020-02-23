@@ -5,7 +5,7 @@ from .models import Order
 class OrderSerialzer(serializers.ModelSerializer):
     class Meta:
         model = Order
-        fields = ("cart", "amount", "is_paid")
+        fields = ("id", "cart", "amount", "is_paid")
         read_only_fields = ("amount", "is_paid", "cart")
 
     def save(self, **kwargs):

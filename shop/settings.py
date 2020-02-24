@@ -7,11 +7,11 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/2.2/howto/deployment/checklist/
 
-# SECURITY WARNING: keep the secret key used in production secret!
+0# SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = "jrz*pd-ojb92^wabxof0a#sr6e^jhxo6pu-6cozvji$pca!my-"
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = os.getenv("DEBUG")
+DEBUG = False
 
 
 ALLOWED_HOSTS = ["*"]
@@ -139,7 +139,7 @@ STATIC_ROOT = os.path.join(BASE_DIR, "static")
 MEDIA_URL = "/media/"
 MEDIA_ROOT = os.path.join(BASE_DIR, "media")
 
-SENDGRID_API_KEY = os.getenv("SENDGRID_API_KEY")
+SENDGRID_API_KEY = "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"
 
 EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
 EMAIL_HOST = "smtp.sendgrid.net"

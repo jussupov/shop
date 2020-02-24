@@ -11,6 +11,8 @@ Icon
 # Thumbnails
 ._*
 
+shop/settings/__init__.py
+
 # Files that might appear on external disk
 .Spotlight-V100
 .Trashes

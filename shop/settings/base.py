@@ -1,7 +1,7 @@
 import os
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+BASE_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "..")
 
 
 # Quick-start development settings - unsuitable for production
@@ -32,6 +32,7 @@ INSTALLED_APPS = [
     "drf_yasg",
     "djoser",
     "corsheaders",
+    "django_extensions",
     "phonenumber_field",
     "django_filters",
     # PROJECT APPS
@@ -68,7 +69,7 @@ ROOT_URLCONF = "shop.urls"
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [],
+        "DIRS": [os.path.join(BASE_DIR, "templates")],
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [

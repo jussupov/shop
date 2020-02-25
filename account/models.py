@@ -8,15 +8,17 @@ from phonenumber_field.modelfields import PhoneNumberField
 from .managers import UserManager
 from django.dispatch.dispatcher import receiver
 from django.conf import settings
+from utilities.models import TimeModel
 from celery import shared_task
 from django.core.mail import send_mail
+from uuid import uuid4
 
 
 class User(AbstractBaseUser):
     GENDER_CHOICES = [("М", "Мужской"), ("Ж", "Женский")]
     email = models.EmailField(unique=True)
     is_staff = models.BooleanField(default=False)
-    is_active = models.BooleanField(default=True)
+    is_active = models.BooleanField(default=False)
     is_superuser = models.BooleanField(default=False)
     date_joined = models.DateTimeField(auto_now_add=True)
     first_name = models.CharField(max_length=255)
@@ -49,19 +51,32 @@ class User(AbstractBaseUser):
         return True
 
 
+class OTP(TimeModel):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    uuid = models.CharField(max_length=255, unique=True)
+
+
 @shared_task()
-def send(email):
+def send(subject, body, email):
     send_mail(
-        "Subject here",
-        "Here is the message.",
-        "webmaster@localhost",
-        email,
-        fail_silently=False,
+        subject, body, "webmaster@localhost", email, fail_silently=False,
     )
 
 
 @receiver(models.signals.post_save, sender=User)
 def send_code(sender, instance, **kwargs):
-    arr = []
-    arr.append(instance.email)
-    send.delay(arr)
+    if kwargs["created"]:
+        uuid = uuid4()
+        otp = OTP.objects.create(user=instance, uuid=uuid)
+
+        link = f"http:{settings.URL_PATH_PROJECT}/verify?key={uuid}"
+
+        emails = [
+            instance.email,
+        ]
+        send.delay(
+            subject="Регистрация на сайте",
+            body=f"Пройдите по ссылки чтобы подвердить почту : {link}",
+            email=emails,
+        )
+

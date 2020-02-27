@@ -75,6 +75,7 @@ class DetailProductSerializer(serializers.ModelSerializer):
             "description",
             "box_quantity",
             "price",
+            "photos",
             "specification",
         ]
 

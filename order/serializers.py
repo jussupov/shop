@@ -10,7 +10,6 @@ class OrderSerialzer(serializers.ModelSerializer):
 
     def save(self, **kwargs):
         validated_data = dict(list(self.validated_data.items()) + list(kwargs.items()))
-        print(validated_data)
         instance, _ = Order.objects.get_or_create(cart=validated_data["cart"])
         instance.amount = validated_data["amount"]
         instance.save()

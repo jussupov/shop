@@ -8,6 +8,7 @@ from rest_framework.decorators import api_view
 from django.shortcuts import get_object_or_404
 from utilities.task import Payment
 from rest_framework.response import Response
+from rest_framework import status
 
 
 class OrderView(ModelViewSet):
@@ -21,7 +22,17 @@ class OrderView(ModelViewSet):
         amount = cart_items.aggregate(
             sum=Sum(F("product__price") * F("quantity") * F("product__box_quantity"))
         )["sum"]
-        serializer.save(cart=cart, amount=amount)
+        return serializer.save(cart=cart, amount=amount)
+
+    def create(self, request):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        data = self.perform_create(serializer)
+        headers = self.get_success_headers(serializer.data)
+
+        return Response(
+            {"order_id": data.id}, status=status.HTTP_201_CREATED, headers=headers
+        )
 
     def get_queryset(self):
         return Order.objects.filter(cart__user=self.request.user, cart__is_active=True)

@@ -5,6 +5,7 @@ from .serialzers import CartItemSerialzer
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from django.shortcuts import get_object_or_404
+from rest_framework.decorators import action
 from rest_framework import status
 
 
@@ -24,25 +25,15 @@ class CartView(ModelViewSet):
         cart, _ = Cart.objects.get_or_create(user=self.request.user, is_active=True)
         serializer.save(cart=cart)
 
-    # def create(self, request):
-    #     cart, _ = Cart.objects.get_or_create(user=request.user, is_active=True)
+    @action(detail=False, methods=["post"])
+    def bulk(self, request):
+        data = request.data
 
-    #     serialzer = CartItemCreateSerializer()
+        for item in data:
+            serialzer = CartItemSerialzer(data=item)
+            serialzer.is_valid(raise_exception=True)
+            cart, _ = Cart.objects.get_or_create(user=self.request.user, is_active=True)
+            serialzer.save(cart=cart)
 
-    #     product = get_object_or_404(Product, id=request.data["product"])
+        return Response({"status": "Добавлено"}, status=status.HTTP_200_OK)
 
-    #     if int(request.data["quantity"]) > product.quantity:
-    #         return Response(
-    #             {"message": "Количество больше чем товаров"},
-    #             status=status.HTTP_400_BAD_REQUEST,
-    #         )
-
-    #     data = {
-    #         "cart_id": cart.id,
-    #         "product_id": request.data["product"],
-    #         "quantity": request.data["quantity"],
-    #     }
-
-    #     serialzer.save(data)
-
-    #     return Response({"message": "Добавлено"}, status=status.HTTP_201_CREATED)

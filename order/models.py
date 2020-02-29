@@ -22,7 +22,7 @@ class City(TimeModel):
 
 
 class Address(TimeModel):
-    order = models.ForeignKey(Order, on_delete=models.CASCADE)
+    order = models.ForeignKey(Order, on_delete=models.CASCADE, blank=True, null=True)
     city = models.ForeignKey(City, on_delete=models.CASCADE)
     address = models.CharField(max_length=255)
     phone = PhoneNumberField(blank=True)

@@ -71,9 +71,8 @@ def send_code(sender, instance, **kwargs):
 
         link = f"http:{settings.URL_PATH_PROJECT}/verify?key={uuid}"
 
-        emails = [
-            instance.email,
-        ]
+        emails = []
+        emails.append(instance.email)
         send.delay(
             subject="Регистрация на сайте",
             body=f"Пройдите по ссылки чтобы подвердить почту : {link}",

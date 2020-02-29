@@ -1,6 +1,7 @@
 from django.db import models
 from utilities.models import TimeAndActiveModel, BaseModel, TimeModel
 from category.models import Category
+from utilities.utils import unique_slug_generator
 
 
 class Product(BaseModel):
@@ -13,6 +14,10 @@ class Product(BaseModel):
 
     def __str__(self):
         return f"{self.category} / {self.title}"
+
+    def save(self, *args, **kwargs):
+        self.slug = unique_slug_generator(Product, self.title)
+        super(Product, self).save(*args, **kwargs)
 
 
 class Photo(TimeModel):

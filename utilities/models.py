@@ -14,12 +14,8 @@ class BaseModel(TimeModel):
     class Meta:
         abstract = True
 
-    title = models.CharField(max_length=255, unique=True)
+    title = models.CharField(max_length=255)
     slug = models.SlugField(blank=True)
-
-    def save(self, *args, **kwargs):
-        self.slug = slugify(self.title)
-        super(BaseModel, self).save(*args, **kwargs)
 
 
 class TimeAndActiveModel(TimeModel):

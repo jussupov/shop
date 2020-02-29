@@ -2,6 +2,7 @@ from django.db import models
 from utilities.models import BaseModel
 from transliterate import translit
 from pytils.translit import slugify
+from utilities.utils import unique_slug_generator
 
 
 class Category(BaseModel):
@@ -17,12 +18,8 @@ class Category(BaseModel):
         )
 
     def save(self, *args, **kwargs):
-        # title = translit(self.title, reversed=True)
-        try:
-            self.slug = f"{self.parent.slug}-{slugify(self.title)}"
-        except Exception:
-            self.slug = slugify(self.title)
-        super(BaseModel, self).save(*args, **kwargs)
+        self.slug = unique_slug_generator(Category, self.title)
+        super(Category, self).save(*args, **kwargs)
 
     def __str__(self):
         if self.parent is None:

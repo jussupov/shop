@@ -1,8 +1,8 @@
 from rest_framework import serializers
-from .models import Order
+from .models import Order, Address, City
 
 
-class OrderSerialzer(serializers.ModelSerializer):
+class OrderSerializer(serializers.ModelSerializer):
     class Meta:
         model = Order
         fields = ("id", "cart", "amount", "is_paid")
@@ -14,3 +14,15 @@ class OrderSerialzer(serializers.ModelSerializer):
         instance.amount = validated_data["amount"]
         instance.save()
         return instance
+
+
+class CitySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = City
+        fields = ("title", "id")
+
+
+class AddressSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Address
+        fields = "__all__"

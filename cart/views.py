@@ -27,13 +27,10 @@ class CartView(ModelViewSet):
 
     @action(detail=False, methods=["post"])
     def bulk(self, request):
-        data = request.data
-
-        for item in data:
+        for item in request.data:
             serialzer = CartItemSerialzer(data=item)
             serialzer.is_valid(raise_exception=True)
             cart, _ = Cart.objects.get_or_create(user=self.request.user, is_active=True)
             serialzer.save(cart=cart)
-
         return Response({"status": "Добавлено"}, status=status.HTTP_200_OK)
 

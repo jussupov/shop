@@ -25,6 +25,12 @@ class CartView(ModelViewSet):
         cart, _ = Cart.objects.get_or_create(user=self.request.user, is_active=True)
         serializer.save(cart=cart)
 
+    @action(detail=False, methods=["get"])
+    def count(self, request):
+        cart, _ = Cart.objects.get_or_create(user=self.request.user, is_active=True)
+        count = CartItem.objects.filter(cart=cart).count()
+        return Response({"count": count}, status=status.HTTP_200_OK)
+
     @action(detail=False, methods=["post"])
     def bulk(self, request):
         for item in request.data:

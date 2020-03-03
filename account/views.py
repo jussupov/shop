@@ -33,21 +33,16 @@ def verify(request):
 
 
 class TokenCreateView(utils.ActionViewMixin, generics.GenericAPIView):
-    """
-    Use this endpoint to obtain user authentication token.
-    """
 
     serializer_class = settings.SERIALIZERS.token_create
-    permission_classes = settings.PERMISSIONS.token_create
 
     def _action(self, serializer):
         token = utils.login_user(self.request, serializer.user)
         token_serializer_class = settings.SERIALIZERS.token
         data = token_serializer_class(token).data
-
         user_data = settings.SERIALIZERS.user(token.user)
         data.update(user_data.data)
-        cart, _ = Cart.objects.get_or_create(user=self.request.user, is_active=True)
+        cart, _ = Cart.objects.get_or_create(user=token.user, is_active=True)
         count = CartItem.objects.filter(cart=cart).count()
         data.update({"count": count})
         return Response(data=data, status=status.HTTP_200_OK)

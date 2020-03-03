@@ -11,6 +11,7 @@ class Product(BaseModel):
     quantity = models.PositiveIntegerField()
     likes = models.PositiveIntegerField(default=0)
     box_quantity = models.PositiveIntegerField(default=0)
+    old_price = models.PositiveIntegerField(null=True, blank=True)
 
     def __str__(self):
         return f"{self.category} / {self.title}"

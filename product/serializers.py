@@ -49,7 +49,16 @@ class ListProductSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Product
-        fields = ["id", "title", "slug", "price", "images", "category", "box_quantity"]
+        fields = [
+            "id",
+            "title",
+            "slug",
+            "price",
+            "images",
+            "category",
+            "box_quantity",
+            "old_price",
+        ]
 
 
 class DetailProductSerializer(serializers.ModelSerializer):
@@ -75,8 +84,9 @@ class DetailProductSerializer(serializers.ModelSerializer):
             "description",
             "box_quantity",
             "price",
-            "photos",
+            "quantity",
             "specification",
+            "old_price",
         ]
 
         lookup_field = "slug"

@@ -2,6 +2,14 @@ from django.shortcuts import render, get_object_or_404
 from .models import OTP
 from django.conf import settings
 from django.utils import timezone
+from djoser import signals, utils
+from djoser.conf import settings
+from rest_framework import generics
+from rest_framework.response import Response
+from rest_framework import views
+from .serialzers import UserSerialzer
+from rest_framework import status
+from cart.models import CartItem, Cart
 
 
 def verify(request):
@@ -22,3 +30,36 @@ def verify(request):
         return render(request, "verify/index.html", {"status": True})
 
     return render(request, "verify/404.html")
+
+
+class TokenCreateView(utils.ActionViewMixin, generics.GenericAPIView):
+    """
+    Use this endpoint to obtain user authentication token.
+    """
+
+    serializer_class = settings.SERIALIZERS.token_create
+    permission_classes = settings.PERMISSIONS.token_create
+
+    def _action(self, serializer):
+        token = utils.login_user(self.request, serializer.user)
+        token_serializer_class = settings.SERIALIZERS.token
+        data = token_serializer_class(token).data
+
+        user_data = settings.SERIALIZERS.user(token.user)
+        data.update(user_data.data)
+        cart, _ = Cart.objects.get_or_create(user=self.request.user, is_active=True)
+        count = CartItem.objects.filter(cart=cart).count()
+        data.update({"count": count})
+        return Response(data=data, status=status.HTTP_200_OK)
+
+
+class TokenDestroyView(views.APIView):
+    """
+    Use this endpoint to logout user (remove user authentication token).
+    """
+
+    permission_classes = settings.PERMISSIONS.token_destroy
+
+    def post(self, request):
+        utils.logout_user(request)
+        return Response(status=status.HTTP_204_NO_CONTENT)

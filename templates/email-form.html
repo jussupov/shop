@@ -1,0 +1,26 @@
+{%  extends 'base.html' %}
+
+
+{%  block style %}
+    <style>
+        .btn{
+            background-color: #4CAF50; /* Green */
+            border: none;
+            color: white;
+            padding: 15px 32px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+        }
+    </style>
+{%  endblock %}
+
+{% block content %}
+
+    <div class="jumbotron">
+        <h1 class="display-4">Вы зарегистрировались на сайте <a href="http://optovichok.kz">optovichok.kz</a></h1>
+        <p class="lead">Нажмите на кнопку чтобы подтвердить регистрацию</p>
+        <a class="btn btn-primary btn-lg" href="{{ link }}" role="button">Подтвердить</a>
+    </div>
+{% endblock %}

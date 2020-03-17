@@ -11,6 +11,8 @@ from django.conf import settings
 from utilities.models import TimeModel
 from celery import shared_task
 from django.core.mail import send_mail
+from django.template.loader import render_to_string
+from django.utils.html import strip_tags
 from uuid import uuid4
 
 
@@ -57,9 +59,9 @@ class OTP(TimeModel):
 
 
 @shared_task()
-def send(subject, body, email):
+def send(subject, body, email, html_message):
     send_mail(
-        subject, body, "webmaster@localhost", email, fail_silently=False,
+        subject, body, "webmaster@localhost", email, html_message=html_message,
     )
 
 
@@ -68,14 +70,15 @@ def send_code(sender, instance, **kwargs):
     if kwargs["created"]:
         uuid = uuid4()
         otp = OTP.objects.create(user=instance, uuid=uuid)
-
-        link = f"http:{settings.URL_PATH_PROJECT}/verify?key={uuid}"
-
+        link = f"{settings.URL_PATH_PROJECT}/verify?key={uuid}"
+        html_message = render_to_string('email-form.html', {'link':link})
+        plain_message = strip_tags(html_message)
         emails = []
         emails.append(instance.email)
         send.delay(
             subject="Регистрация на сайте",
-            body=f"Пройдите по ссылки чтобы подвердить почту : {link}",
+            body=plain_message,
             email=emails,
+            html_message=html_message
         )
 

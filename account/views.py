@@ -1,6 +1,6 @@
 from django.shortcuts import render, get_object_or_404
 from .models import OTP
-from django.conf import settings
+import shop.settings as settings
 from django.utils import timezone
 from djoser import signals, utils
 from djoser.conf import settings
@@ -20,7 +20,7 @@ def verify(request):
         diff = timezone.now() - otp.created
         diff = diff.total_seconds()
 
-        if diff > settings.DIFF_SECONDS:
+        if diff > 360:
             return render(request, "verify/index.html", {"status": False})
 
         user = otp.user

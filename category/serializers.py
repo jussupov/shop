@@ -3,7 +3,7 @@ from .models import Category
 
 
 # For the: [ list ]
-class BaseCategorySerailzer(serializers.ModelSerializer):
+class BaseCategorySerializer(serializers.ModelSerializer):
     class Meta:
         model = Category
         fields = ("title", "slug")
@@ -11,8 +11,8 @@ class BaseCategorySerailzer(serializers.ModelSerializer):
 
 
 # For the: [ retrieve ]
-class CategorySerailzer(BaseCategorySerailzer):
+class CategorySerializer(BaseCategorySerializer):
     def get_fields(self):
-        fields = super(CategorySerailzer, self).get_fields()
-        fields["child"] = CategorySerailzer(many=True)
+        fields = super(CategorySerializer, self).get_fields()
+        fields["child"] = CategorySerializer(many=True)
         return fields

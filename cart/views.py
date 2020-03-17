@@ -33,6 +33,7 @@ class CartView(ModelViewSet):
 
     @action(detail=False, methods=["post"])
     def bulk(self, request):
+
         for item in request.data:
             serialzer = CartItemSerialzer(data=item)
             serialzer.is_valid(raise_exception=True)

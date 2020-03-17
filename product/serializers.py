@@ -1,7 +1,8 @@
 from rest_framework import serializers
 from .models import Product, Photo, Specification, ProductSpecifications
 from category.models import Category
-from category.serializers import CategorySerailzer
+from category.serializers import CategorySerializer
+from django.db.models import Max, Min
 
 
 class ParentCategorySerializer(serializers.ModelSerializer):
@@ -61,8 +62,10 @@ class ListProductSerializer(serializers.ModelSerializer):
         ]
 
 
-class DetailProductSerializer(serializers.ModelSerializer):
 
+
+
+class DetailProductSerializer(serializers.ModelSerializer):
     images = serializers.SerializerMethodField()
     category = ParentCategorySerializer()
     specification = SpecificationSerialzer(many=True)

@@ -1,8 +1,7 @@
 from rest_framework import serializers
 from .models import Product, Photo, Specification, ProductSpecifications
 from category.models import Category
-from category.serializers import CategorySerializer
-from django.db.models import Max, Min
+from django.conf import settings
 
 
 class ParentCategorySerializer(serializers.ModelSerializer):
@@ -36,17 +35,17 @@ class ProductImageSerializer(serializers.ModelSerializer):
 
 
 class ListProductSerializer(serializers.ModelSerializer):
-    images = serializers.SerializerMethodField()
+    image = serializers.SerializerMethodField()
     category = serializers.SerializerMethodField()
 
     def get_category(self, obj):
         return obj.category.title
 
-    def get_images(self, obj):
+    def get_image(self, obj):
         i_qs = Photo.objects.filter(product=obj)
-        if len(i_qs) == 0:
-            return None
-        return ProductImageSerializer(i_qs, many=True).data
+        if i_qs.exists():
+            return f"/media/{i_qs.first().image}"
+        return settings.NON_IMAGE
 
     class Meta:
         model = Product
@@ -55,14 +54,11 @@ class ListProductSerializer(serializers.ModelSerializer):
             "title",
             "slug",
             "price",
-            "images",
+            "image",
             "category",
             "box_quantity",
             "old_price",
         ]
-
-
-
 
 
 class DetailProductSerializer(serializers.ModelSerializer):
@@ -73,7 +69,7 @@ class DetailProductSerializer(serializers.ModelSerializer):
     def get_images(self, obj):
         i_qs = Photo.objects.filter(product=obj)
         if len(i_qs) == 0:
-            return None
+            return {"image": settings.NON_IMAGE}
         return ProductImageSerializer(i_qs, many=True).data
 
     class Meta:

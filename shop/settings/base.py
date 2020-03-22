@@ -3,7 +3,6 @@ import os
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "..")
 
-
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/2.2/howto/deployment/checklist/
 
@@ -14,7 +13,6 @@ SECRET_KEY = "jrz*pd-ojb92^wabxof0a#sr6e^jhxo6pu-6cozvji$pca!my-"
 
 
 ALLOWED_HOSTS = ["*"]
-
 
 # Application definition
 
@@ -51,7 +49,6 @@ REST_FRAMEWORK = {
     ),
 }
 
-
 MIDDLEWARE = [
     "corsheaders.middleware.CorsMiddleware",
     "django.middleware.common.CommonMiddleware",
@@ -62,7 +59,6 @@ MIDDLEWARE = [
     "django.contrib.messages.middleware.MessageMiddleware",
     # "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
-
 
 ROOT_URLCONF = "shop.urls"
 
@@ -84,7 +80,6 @@ TEMPLATES = [
 
 WSGI_APPLICATION = "shop.wsgi.application"
 
-
 # Database
 # https://docs.djangoproject.com/en/2.2/ref/settings/#databases
 
@@ -101,7 +96,6 @@ DATABASES = {
 
 AUTH_USER_MODEL = "account.User"
 
-
 # Password validation
 # https://docs.djangoproject.com/en/2.2/ref/settings/#auth-password-validators
 
@@ -109,11 +103,10 @@ AUTH_PASSWORD_VALIDATORS = [
     {
         "NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator",
     },
-    {"NAME": "django.contrib.auth.password_validation.MinimumLengthValidator",},
-    {"NAME": "django.contrib.auth.password_validation.CommonPasswordValidator",},
-    {"NAME": "django.contrib.auth.password_validation.NumericPasswordValidator",},
+    {"NAME": "django.contrib.auth.password_validation.MinimumLengthValidator", },
+    {"NAME": "django.contrib.auth.password_validation.CommonPasswordValidator", },
+    {"NAME": "django.contrib.auth.password_validation.NumericPasswordValidator", },
 ]
-
 
 # Internationalization
 # https://docs.djangoproject.com/en/2.2/topics/i18n/
@@ -131,7 +124,6 @@ USE_TZ = False
 CORS_ORIGIN_ALLOW_ALL = True
 
 DIFF_SECONDS = 600
-
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.2/howto/static-files/
@@ -162,3 +154,5 @@ DIFF_SECONDS = 360
 MERCHANT_ID = 525768
 INCOME_SECRET_KEY = "9w9mb2QELG2SKReN"
 PAY_BOX_URL = "https://api.paybox.money/v4/payments"
+
+NON_IMAGE = "/media/no_product.png"

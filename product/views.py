@@ -2,15 +2,13 @@ from rest_framework.viewsets import ModelViewSet
 from .serializers import ListProductSerializer, DetailProductSerializer
 from drf_yasg.utils import swagger_auto_schema
 from .models import Product
-from category.models import Category
 from rest_framework.response import Response
 from utilities.pagination import DefaultPagination
 from django_filters.rest_framework import DjangoFilterBackend
 from django.shortcuts import get_object_or_404
 from rest_framework import filters
-from collections import OrderedDict
 from django.db.models import Max, Min
-
+from rest_framework import generics
 from .filters import ProductFilter
 
 
@@ -31,14 +29,27 @@ class ProductView(ModelViewSet):
         if page is not None:
             serializer = self.get_serializer(page, many=True)
             data = self.get_paginated_response(serializer.data).data
-            data.update(
-                Product.objects.aggregate(
-                    maxPrice=Max('price'),
-                    minPrice=Min('price'),
-                    minBoxQuantity=Max('box_quantity'),
-                    maxBoxQuantitiy=Min('box_quantity')
+            category = request.GET.get('category')
+            if category:
+                data.update(
+                    Product.objects.filter(category__slug=category).aggregate(
+                        maxPrice=Max('price'),
+                        minPrice=Min('price'),
+                        minBoxQuantity=Max('box_quantity'),
+                        maxBoxQuantitiy=Min('box_quantity')
+                    )
                 )
-            )
+
+            else:
+                data.update(
+                    Product.objects.aggregate(
+                        maxPrice=Max('price'),
+                        minPrice=Min('price'),
+                        minBoxQuantity=Max('box_quantity'),
+                        maxBoxQuantitiy=Min('box_quantity')
+                    )
+                )
+
             return Response(data)
         serializer = self.get_serializer(queryset, many=True)
         return Response(serializer.data)
@@ -47,4 +58,3 @@ class ProductView(ModelViewSet):
         product = get_object_or_404(Product, slug=slug)
         serializer_class = DetailProductSerializer(product)
         return Response(serializer_class.data)
-

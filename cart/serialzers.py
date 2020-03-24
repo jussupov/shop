@@ -2,6 +2,7 @@ from .models import CartItem
 from product.models import Product
 from rest_framework import serializers
 from product.serializers import ListProductSerializer
+from utilities.exceptions import OverflowException
 from django.shortcuts import get_object_or_404
 
 
@@ -20,7 +21,7 @@ class CartItemSerialzer(serializers.ModelSerializer):
     def save(self, **kwargs):
         validated_data = dict(list(self.validated_data.items()) + list(kwargs.items()))
         if validated_data["quantity"] > validated_data["product"].quantity:
-            raise ValueError("pizda bochek potik")
+            raise OverflowException()
         instance, _ = CartItem.objects.get_or_create(
             product=validated_data["product"], cart=validated_data["cart"]
         )

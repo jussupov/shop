@@ -1,19 +1,7 @@
-from rest_framework.exceptions import ValidationError
-from rest_framework.views import exception_handler
+from rest_framework.exceptions import APIException
 
 
-def base_exception_handler(exc, context):
-    response = exception_handler(exc, context)
-
-    # check that a ValidationError exception is raised
-    if isinstance(exc, ValidationError):
-        # here prepare the 'custom_error_response' and
-        # set the custom response data on response object
-        if response.data.get("username", None):
-            response.data = response.data["username"][0]
-        elif response.data.get("email", None):
-            response.data = response.data["email"][0]
-        elif response.data.get("password", None):
-            response.data = response.data["password"][0]
-
-    return response
+class OverflowException(APIException):
+    status_code = 401
+    default_detail = 'Вы указали слишком много товара'
+    default_code = 'message'

@@ -14,7 +14,7 @@ class CartView(ModelViewSet):
     serializer_class = CartItemSerialzer
     permission_classes = (IsAuthenticated,)
 
-    def list(self, request):
+    def list(self, request, **kwargs):
         cart, _ = Cart.objects.get_or_create(user=request.user, is_active=True)
         queryset = CartItem.objects.filter(cart=cart)
         serializer_class = CartItemSerialzer(queryset, many=True)
@@ -33,11 +33,9 @@ class CartView(ModelViewSet):
 
     @action(detail=False, methods=["post"])
     def bulk(self, request):
-
         for item in request.data:
-            serialzer = CartItemSerialzer(data=item)
-            serialzer.is_valid(raise_exception=True)
+            serializer = CartItemSerialzer(data=item)
+            serializer.is_valid(raise_exception=True)
             cart, _ = Cart.objects.get_or_create(user=self.request.user, is_active=True)
-            serialzer.save(cart=cart)
+            serializer.save(cart=cart)
         return Response({"status": "Добавлено"}, status=status.HTTP_200_OK)
-

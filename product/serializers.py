@@ -89,3 +89,9 @@ class DetailProductSerializer(serializers.ModelSerializer):
         ]
 
         lookup_field = "slug"
+
+
+class ProductSpecificationSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ProductSpecifications
+        fields = "__all__"

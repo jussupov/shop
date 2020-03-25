@@ -15,6 +15,8 @@ class ProductFilter(filters.FilterSet):
     )
     category = filters.CharFilter(field_name="category__slug", method="filter_category")
 
+
+
     def filter_category(self, queryset, name, value):
         # category = get_object_or_404(Category, slug=value)
         # if category.child:

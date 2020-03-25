@@ -12,6 +12,7 @@ class Product(BaseModel):
     likes = models.PositiveIntegerField(default=0)
     box_quantity = models.PositiveIntegerField(default=0)
     old_price = models.PositiveIntegerField(null=True, blank=True)
+    specification = models.ManyToManyField(to='ValueSpecification')
 
     def __str__(self):
         return f"{self.category} / {self.title}"
@@ -39,15 +40,21 @@ class Specification(TimeModel):
         return f"{self.category} | {self.title}"
 
 
-class ProductSpecifications(TimeModel):
+class ValueSpecification(TimeModel):
     category_spec_types = models.ForeignKey(
         Specification, on_delete=models.CASCADE, related_name="spec"
-    )
-    product = models.ForeignKey(
-        Product, on_delete=models.CASCADE, related_name="specification"
     )
     value = models.CharField(max_length=255)
 
     def __str__(self):
-        return f"{self.product} - {self.category_spec_types}"
+        return f"{self.category_spec_types} - {self.value}"
 
+#
+# class ProductSpecifications(TimeModel):
+#     product = models.ForeignKey(
+#         Product, on_delete=models.CASCADE, related_name="specification"
+#     )
+#     value = models.ForeignKey(ValueSpecification, on_delete=models.CASCADE, related_name="value")
+#
+#     def __str__(self):
+#         return f"{self.product} - {self.category_spec_types}"

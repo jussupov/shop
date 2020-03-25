@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Product, Photo, Specification, ProductSpecifications
+from .models import Product, Photo, Specification
 from category.models import Category
 from django.conf import settings
 
@@ -17,15 +17,15 @@ class ParentCategorySerializer(serializers.ModelSerializer):
         fields = ("slug", "title", "parent")
 
 
-class SpecificationSerialzer(serializers.ModelSerializer):
-    parametr = serializers.SerializerMethodField()
-
-    def get_parametr(self, obj):
-        return obj.category_spec_types.title
-
-    class Meta:
-        model = ProductSpecifications
-        fields = ("value", "parametr")
+# class SpecificationSerialzer(serializers.ModelSerializer):
+#     parametr = serializers.SerializerMethodField()
+#
+#     def get_parametr(self, obj):
+#         return obj.category_spec_types.title
+#
+#     class Meta:
+#         model = ProductSpecifications
+#         fields = ("value", "parametr")
 
 
 class ProductImageSerializer(serializers.ModelSerializer):
@@ -64,7 +64,16 @@ class ListProductSerializer(serializers.ModelSerializer):
 class DetailProductSerializer(serializers.ModelSerializer):
     images = serializers.SerializerMethodField()
     category = ParentCategorySerializer()
-    specification = SpecificationSerialzer(many=True)
+    # specification = SpecificationSerialzer(many=True)
+    specification = serializers.SerializerMethodField()
+
+    def get_specification(self, obj):
+        return [
+            {
+                "parameter": d.category_spec_types.title,
+                "value": d.value
+            } for d in obj.specification.all()
+        ]
 
     def get_images(self, obj):
         i_qs = Photo.objects.filter(product=obj)
@@ -84,14 +93,13 @@ class DetailProductSerializer(serializers.ModelSerializer):
             "box_quantity",
             "price",
             "quantity",
-            "specification",
             "old_price",
+            "specification"
         ]
 
         lookup_field = "slug"
 
-
-class ProductSpecificationSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = ProductSpecifications
-        fields = "__all__"
+# class ProductSpecificationSerializer(serializers.ModelSerializer):
+#     class Meta:
+#         model = ProductSpecifications
+#         fields = "__all__"

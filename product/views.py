@@ -1,7 +1,7 @@
 from rest_framework.viewsets import ModelViewSet
 from .serializers import ListProductSerializer, DetailProductSerializer
 from drf_yasg.utils import swagger_auto_schema
-from .models import Product
+from .models import Product, Specification
 from rest_framework.response import Response
 from utilities.pagination import DefaultPagination
 from django_filters.rest_framework import DjangoFilterBackend
@@ -10,6 +10,7 @@ from rest_framework import filters
 from django.db.models import Max, Min
 from rest_framework import generics
 from .filters import ProductFilter
+from django.db.models import Count
 
 
 @swagger_auto_schema()
@@ -17,7 +18,7 @@ class ProductView(ModelViewSet):
     queryset = Product.objects.all()
     serializer_class = ListProductSerializer
     lookup_field = "slug"
-    filter_backends = (filters.SearchFilter, DjangoFilterBackend)
+    filter_backends = (filters.SearchFilter, DjangoFilterBackend, filters.OrderingFilter)
     search_fields = ("title",)
     filterset_class = ProductFilter
     pagination_class = DefaultPagination

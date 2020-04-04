@@ -58,6 +58,7 @@ class ListProductSerializer(serializers.ModelSerializer):
             "category",
             "box_quantity",
             "old_price",
+            "likes"
         ]
 
 
@@ -94,7 +95,8 @@ class DetailProductSerializer(serializers.ModelSerializer):
             "price",
             "quantity",
             "old_price",
-            "specification"
+            "specification",
+            "likes"
         ]
 
         lookup_field = "slug"

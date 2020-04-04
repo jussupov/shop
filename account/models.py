@@ -1,10 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import (
     AbstractBaseUser,
-    BaseUserManager,
-    PermissionsMixin,
 )
-from phonenumber_field.modelfields import PhoneNumberField
 from .managers import UserManager
 from django.dispatch.dispatcher import receiver
 from django.conf import settings
@@ -71,7 +68,7 @@ def send_code(sender, instance, **kwargs):
         uuid = uuid4()
         otp = OTP.objects.create(user=instance, uuid=uuid)
         link = f"{settings.URL_PATH_PROJECT}/verify?key={uuid}"
-        html_message = render_to_string('email-form.html', {'link':link})
+        html_message = render_to_string('email-form.html', {'link': link})
         plain_message = strip_tags(html_message)
         emails = []
         emails.append(instance.email)
@@ -81,4 +78,3 @@ def send_code(sender, instance, **kwargs):
             email=emails,
             html_message=html_message
         )
-

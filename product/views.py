@@ -8,9 +8,16 @@ from django_filters.rest_framework import DjangoFilterBackend
 from django.shortcuts import get_object_or_404
 from rest_framework import filters
 from django.db.models import Max, Min
-from rest_framework import generics
 from .filters import ProductFilter
-from django.db.models import Count
+
+
+def get_client_ip(request):
+    x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
+    if x_forwarded_for:
+        ip = x_forwarded_for.split(',')[0]
+    else:
+        ip = request.META.get('REMOTE_ADDR')
+    return ip
 
 
 @swagger_auto_schema()
@@ -23,7 +30,7 @@ class ProductView(ModelViewSet):
     filterset_class = ProductFilter
     pagination_class = DefaultPagination
 
-    def list(self, request):
+    def list(self, request, **kwargs):
         queryset = self.filter_queryset(self.get_queryset())
 
         page = self.paginate_queryset(queryset)
@@ -55,7 +62,3 @@ class ProductView(ModelViewSet):
         serializer = self.get_serializer(queryset, many=True)
         return Response(serializer.data)
 
-    def retrieve(self, request, slug=None):
-        product = get_object_or_404(Product, slug=slug)
-        serializer_class = DetailProductSerializer(product)
-        return Response(serializer_class.data)

@@ -30,6 +30,11 @@ class ProductView(ModelViewSet):
     filterset_class = ProductFilter
     pagination_class = DefaultPagination
 
+    action_serializers = {
+        'retrieve': DetailProductSerializer,
+        'list': ListProductSerializer,
+    }
+
     def list(self, request, **kwargs):
         queryset = self.filter_queryset(self.get_queryset())
 
@@ -62,3 +67,8 @@ class ProductView(ModelViewSet):
         serializer = self.get_serializer(queryset, many=True)
         return Response(serializer.data)
 
+    def get_serializer_class(self):
+        if hasattr(self, 'action_serializers'):
+            if self.action in self.action_serializers:
+                return self.action_serializers[self.action]
+        return super(ProductView, self).get_serializer_class()

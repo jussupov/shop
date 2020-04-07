@@ -2,7 +2,8 @@ from django.shortcuts import render, get_object_or_404
 from .models import OTP
 import shop.settings as settings
 from django.utils import timezone
-from djoser import utils
+from djoser import signals, utils
+from djoser.conf import settings
 from rest_framework import generics
 from rest_framework.response import Response
 from rest_framework import views

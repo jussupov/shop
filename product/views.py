@@ -1,14 +1,17 @@
 from rest_framework.viewsets import ModelViewSet
 from .serializers import ListProductSerializer, DetailProductSerializer
 from drf_yasg.utils import swagger_auto_schema
-from .models import Product, Specification
+from .models import Product
 from rest_framework.response import Response
 from utilities.pagination import DefaultPagination
 from django_filters.rest_framework import DjangoFilterBackend
-from django.shortcuts import get_object_or_404
 from rest_framework import filters
 from django.db.models import Max, Min
 from .filters import ProductFilter
+
+from django.utils.decorators import method_decorator
+from django.views.decorators.cache import cache_page
+from django.views.decorators.vary import vary_on_cookie
 
 
 def get_client_ip(request):
@@ -35,9 +38,9 @@ class ProductView(ModelViewSet):
         'list': ListProductSerializer,
     }
 
+    @method_decorator(cache_page(60 * 2))
     def list(self, request, **kwargs):
         queryset = self.filter_queryset(self.get_queryset())
-
         page = self.paginate_queryset(queryset)
         if page is not None:
             serializer = self.get_serializer(page, many=True)

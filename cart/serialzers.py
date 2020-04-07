@@ -4,7 +4,6 @@ from rest_framework import serializers
 from product.serializers import ListProductSerializer
 from utilities.exceptions import OverflowException
 from django.db.models import F
-from django.shortcuts import get_object_or_404
 
 
 class CartItemSerialzer(serializers.ModelSerializer):
@@ -19,7 +18,9 @@ class CartItemSerialzer(serializers.ModelSerializer):
         read_only_fields = ("id", "cart")
 
     def save(self, **kwargs):
-        validated_data = dict(list(self.validated_data.items()) + list(kwargs.items()))
+        validated_data = dict(
+            list(self.validated_data.items()) + list(kwargs.items())
+        )
         if validated_data["quantity"] > validated_data["product"].quantity:
             raise OverflowException()
 
@@ -27,8 +28,11 @@ class CartItemSerialzer(serializers.ModelSerializer):
             product=validated_data["product"], cart=validated_data["cart"]
         )
         if result:
-            print("here")
-            Product.objects.filter(id=validated_data["product"].id).update(likes=F('likes') + 1)
+            (Product
+             .objects
+             .filter(id=validated_data["product"].id)
+             .update(likes=F('likes') + 1))
+
         instance.quantity = validated_data["quantity"]
         instance.save()
         return instance

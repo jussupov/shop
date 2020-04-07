@@ -27,7 +27,7 @@ class User(AbstractBaseUser):
 
     USERNAME_FIELD = "email"
 
-    REQUIRED_FIELDS = [
+    REQUIRED_FIELD = [
         "birth_day",
         "gender",
         "first_name",
@@ -66,12 +66,11 @@ def send(subject, body, email, html_message):
 def send_code(sender, instance, **kwargs):
     if kwargs["created"]:
         uuid = uuid4()
-        otp = OTP.objects.create(user=instance, uuid=uuid)
+        OTP.objects.create(user=instance, uuid=uuid)
         link = f"{settings.URL_PATH_PROJECT}/verify?key={uuid}"
         html_message = render_to_string('email-form.html', {'link': link})
         plain_message = strip_tags(html_message)
-        emails = []
-        emails.append(instance.email)
+        emails = [instance.email]
         send.delay(
             subject="Регистрация на сайте",
             body=plain_message,

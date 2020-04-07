@@ -22,7 +22,7 @@ def get_client_ip(request):
     return ip
 
 @swagger_auto_schema()
-@method_decorator(cache_page(60 * 15))
+@method_decorator(cache_page(60 * 15), name='dispatch')
 class ProductView(ModelViewSet):
     queryset = Product.objects.all()
     serializer_class = ListProductSerializer

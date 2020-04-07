@@ -2,7 +2,6 @@ from .base import *
 
 DEBUG = True
 
-
 SENDGRID_API_KEY = (
     "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"
 )

@@ -11,7 +11,6 @@ from .filters import ProductFilter
 
 from django.utils.decorators import method_decorator
 from django.views.decorators.cache import cache_page
-from django.views.decorators.vary import vary_on_cookie
 
 
 def get_client_ip(request):
@@ -28,7 +27,9 @@ class ProductView(ModelViewSet):
     queryset = Product.objects.all()
     serializer_class = ListProductSerializer
     lookup_field = "slug"
-    filter_backends = (filters.SearchFilter, DjangoFilterBackend, filters.OrderingFilter)
+    filter_backends = (
+        filters.SearchFilter, DjangoFilterBackend, filters.OrderingFilter
+    )
     search_fields = ("title",)
     filterset_class = ProductFilter
     pagination_class = DefaultPagination

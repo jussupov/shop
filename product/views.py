@@ -21,8 +21,8 @@ def get_client_ip(request):
         ip = request.META.get('REMOTE_ADDR')
     return ip
 
-
 @swagger_auto_schema()
+@method_decorator(cache_page(60 * 15))
 class ProductView(ModelViewSet):
     queryset = Product.objects.all()
     serializer_class = ListProductSerializer
@@ -39,7 +39,6 @@ class ProductView(ModelViewSet):
         'list': ListProductSerializer,
     }
 
-    @method_decorator(cache_page(60 * 2))
     def list(self, request, **kwargs):
         queryset = self.filter_queryset(self.get_queryset())
         page = self.paginate_queryset(queryset)

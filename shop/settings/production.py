@@ -7,3 +7,13 @@ SENDGRID_API_KEY = (
 )
 
 URL_PATH_PROJECT = "http://178.62.252.32"
+
+CACHES = {
+    'default': {
+        'BACKEND': 'django_redis.cache.RedisCache',
+        'LOCATION': 'redis://127.0.0.1:6379/',
+        'OPTIONS': {
+            'CLIENT_CLASS': 'django_redis.client.DefaultClient',
+        }
+    }
+}

@@ -1,8 +1,4 @@
 from django.urls import path, include
-from .views import verify, TokenCreateView, TokenDestroyView
+from .views import verify, UserView
 
-urlpatterns = [
-    path("verify", verify),
-    path("api/auth/login", TokenCreateView.as_view()),
-    path("api/auth/logout", TokenDestroyView.as_view()),
-]
+urlpatterns = [path("verify", verify), path("register", UserView.as_view())]

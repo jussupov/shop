@@ -6,6 +6,8 @@ from rest_framework import permissions
 from django.conf.urls import url
 from django.conf import settings
 from django.conf.urls.static import static
+from rest_framework_simplejwt.views import TokenRefreshView
+from account.jwt import CustomTokenObtainPairView
 
 
 schema_view = get_schema_view(
@@ -38,8 +40,9 @@ urlpatterns = [
     ),
     path("admin/", admin.site.urls),
     path("api/", include("category.urls")),
-    path("api/auth/", include("djoser.urls")),
     path("api/", include("product.urls")),
+    path("api/token", CustomTokenObtainPairView.as_view()),
+    path("api/token/refresh", TokenRefreshView.as_view()),
     path("", include("account.urls")),
 ]
 

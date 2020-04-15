@@ -1,11 +1,12 @@
 from django.db import models
-from utilities.models import TimeAndActiveModel, BaseModel, TimeModel
+
 from category.models import Category
+from utilities.models import BaseModel, TimeAndActiveModel, TimeModel
 from utilities.utils import unique_slug_generator
 
 
 class Product(BaseModel):
-    category = models.ForeignKey(Category, on_delete=models.CASCADE)
+    category = models.ForeignKey(Category, on_delete=models.CASCADE, related_name="category")
     description = models.TextField()
     price = models.PositiveIntegerField(null=False)
     quantity = models.PositiveIntegerField()

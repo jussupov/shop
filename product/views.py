@@ -1,42 +1,48 @@
-from rest_framework.viewsets import ModelViewSet
-from .serializers import ListProductSerializer, DetailProductSerializer
-from drf_yasg.utils import swagger_auto_schema
-from .models import Product
-from rest_framework.response import Response
-from utilities.pagination import DefaultPagination
-from django_filters.rest_framework import DjangoFilterBackend
-from rest_framework import filters
 from django.db.models import Max, Min
-from .filters import ProductFilter
-
 from django.utils.decorators import method_decorator
 from django.views.decorators.cache import cache_page
+from django_filters.rest_framework import DjangoFilterBackend
+from drf_yasg.utils import swagger_auto_schema
+from rest_framework import filters
+from rest_framework.decorators import action
+from rest_framework.response import Response
+from rest_framework.viewsets import ModelViewSet
+
+from utilities.pagination import DefaultPagination
+
+from . import serializers as product_serializer
+from .filters import ProductFilter
+from .models import Product, Specification
 
 
 def get_client_ip(request):
-    x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
+    x_forwarded_for = request.META.get("HTTP_X_FORWARDED_FOR")
     if x_forwarded_for:
-        ip = x_forwarded_for.split(',')[0]
+        ip = x_forwarded_for.split(",")[0]
     else:
-        ip = request.META.get('REMOTE_ADDR')
+        ip = request.META.get("REMOTE_ADDR")
     return ip
 
+
 @swagger_auto_schema()
-@method_decorator(cache_page(60 * 15), name='dispatch')
+@method_decorator(cache_page(60 * 15), name="dispatch")
 class ProductView(ModelViewSet):
     queryset = Product.objects.all()
-    serializer_class = ListProductSerializer
+    serializer_class = product_serializer.ListProductSerializer
     lookup_field = "slug"
     filter_backends = (
-        filters.SearchFilter, DjangoFilterBackend, filters.OrderingFilter
+        filters.SearchFilter,
+        DjangoFilterBackend,
+        filters.OrderingFilter,
     )
     search_fields = ("title",)
     filterset_class = ProductFilter
     pagination_class = DefaultPagination
 
     action_serializers = {
-        'retrieve': DetailProductSerializer,
-        'list': ListProductSerializer,
+        "retrieve": product_serializer.DetailProductSerializer,
+        "list": product_serializer.ListProductSerializer,
+        "create": product_serializer.CreateProductSerializer,
     }
 
     def list(self, request, **kwargs):
@@ -45,24 +51,24 @@ class ProductView(ModelViewSet):
         if page is not None:
             serializer = self.get_serializer(page, many=True)
             data = self.get_paginated_response(serializer.data).data
-            category = request.GET.get('category')
+            category = request.GET.get("category")
             if category:
                 data.update(
                     Product.objects.filter(category__slug=category).aggregate(
-                        maxPrice=Max('price'),
-                        minPrice=Min('price'),
-                        minBoxQuantity=Max('box_quantity'),
-                        maxBoxQuantitiy=Min('box_quantity')
+                        maxPrice=Max("price"),
+                        minPrice=Min("price"),
+                        minBoxQuantity=Max("box_quantity"),
+                        maxBoxQuantitiy=Min("box_quantity"),
                     )
                 )
 
             else:
                 data.update(
                     Product.objects.aggregate(
-                        maxPrice=Max('price'),
-                        minPrice=Min('price'),
-                        minBoxQuantity=Max('box_quantity'),
-                        maxBoxQuantitiy=Min('box_quantity')
+                        maxPrice=Max("price"),
+                        minPrice=Min("price"),
+                        minBoxQuantity=Max("box_quantity"),
+                        maxBoxQuantitiy=Min("box_quantity"),
                     )
                 )
 
@@ -70,8 +76,18 @@ class ProductView(ModelViewSet):
         serializer = self.get_serializer(queryset, many=True)
         return Response(serializer.data)
 
+    @action(detail=False, methods=["GET"])
+    def specification(self, request):
+        slug = request.GET.get("category")
+        if slug:
+            print(slug)
+            queryset = Specification.objects.filter(category__slug=slug)
+            serializer = product_serializer.SpecificationSerializer(queryset)
+            return Response(serializer.data)
+        return Response({"message": "Пустой"})
+
     def get_serializer_class(self):
-        if hasattr(self, 'action_serializers'):
+        if hasattr(self, "action_serializers"):
             if self.action in self.action_serializers:
                 return self.action_serializers[self.action]
         return super(ProductView, self).get_serializer_class()

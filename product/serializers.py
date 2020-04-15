@@ -1,7 +1,12 @@
-from rest_framework import serializers
-from .models import Product, Photo, Specification
-from category.models import Category
+
+import os
+
 from django.conf import settings
+from rest_framework import serializers
+
+from category.models import Category
+
+from .models import Photo, Product, Specification
 
 
 class ParentCategorySerializer(serializers.ModelSerializer):
@@ -58,7 +63,7 @@ class ListProductSerializer(serializers.ModelSerializer):
             "category",
             "box_quantity",
             "old_price",
-            "likes"
+            "likes",
         ]
 
 
@@ -70,10 +75,8 @@ class DetailProductSerializer(serializers.ModelSerializer):
 
     def get_specification(self, obj):
         return [
-            {
-                "parameter": d.category_spec_types.title,
-                "value": d.value
-            } for d in obj.specification.all()
+            {"parameter": d.category_spec_types.title, "value": d.value}
+            for d in obj.specification.all()
         ]
 
     def get_images(self, obj):
@@ -96,10 +99,56 @@ class DetailProductSerializer(serializers.ModelSerializer):
             "quantity",
             "old_price",
             "specification",
-            "likes"
+            "likes",
         ]
 
         lookup_field = "slug"
+
+
+class SpecificationSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Specification
+        fields = ["id", "title", "spec"]
+
+        depth = 1
+
+
+class CreateProductSerializer(serializers.HyperlinkedModelSerializer):
+
+    images = ProductImageSerializer(source="photos_set", many=True, read_only=True)
+    category = serializers.CharField()
+
+    class Meta:
+        model = Product
+        fields = [
+            "title",
+            "category",
+            "images",
+            "description",
+            "box_quantity",
+            "price",
+            "quantity",
+            "old_price",
+        ]
+
+    def create(self, validated_data):
+
+        images_data = self.context.get("view").request.FILES
+        category = Category.objects.get(slug=validated_data.get("category"))
+        product = Product.objects.create(
+            title=validated_data.get("title"),
+            category=category,
+            description=validated_data.get("description"),
+            price=validated_data.get("price"),
+            quantity=validated_data.get("quantity"),
+            box_quantity=validated_data.get("box_quantity"),
+            old_price=validated_data.get("old_price", None),
+        )
+        for image_data in images_data.values():
+
+            Photo.objects.create(product=product, image=image_data)
+        return product
+
 
 # class ProductSpecificationSerializer(serializers.ModelSerializer):
 #     class Meta:

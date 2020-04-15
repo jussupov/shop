@@ -23,4 +23,3 @@ class TimeAndActiveModel(TimeModel):
         abstract = True
 
     is_active = models.BooleanField(default=True)
-

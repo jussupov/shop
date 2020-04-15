@@ -1,14 +1,30 @@
+
 from django.shortcuts import render, get_object_or_404
 from .models import OTP
 import shop.settings as settings
 from django.utils import timezone
-from djoser import signals, utils
-from djoser.conf import settings
-from rest_framework import generics
-from rest_framework.response import Response
-from rest_framework import views
-from rest_framework import status
 from cart.models import CartItem, Cart
+from rest_framework import views, status, response 
+from rest_framework_simplejwt.tokens import RefreshToken
+from .serialzers import UserCreateSerializer
+
+
+
+class UserView(views.APIView):
+
+    def post(self, request):
+        serializer = UserCreateSerializer(data=request.data)
+        if not serializer.is_valid():
+            return response.Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        user = serializer.save()
+        refresh = RefreshToken.for_user(user)
+        result = {
+            "refresh": str(refresh),
+            "access": str(refresh.access_token)
+        }
+
+        return response.Response(result, status=status.HTTP_201_CREATED)
+
 
 
 def verify(request):
@@ -31,29 +47,3 @@ def verify(request):
     return render(request, "verify/404.html")
 
 
-class TokenCreateView(utils.ActionViewMixin, generics.GenericAPIView):
-
-    serializer_class = settings.SERIALIZERS.token_create
-
-    def _action(self, serializer):
-        token = utils.login_user(self.request, serializer.user)
-        token_serializer_class = settings.SERIALIZERS.token
-        data = token_serializer_class(token).data
-        user_data = settings.SERIALIZERS.user(token.user)
-        data.update(user_data.data)
-        cart, _ = Cart.objects.get_or_create(user=token.user, is_active=True)
-        count = CartItem.objects.filter(cart=cart).count()
-        data.update({"count": count})
-        return Response(data=data, status=status.HTTP_200_OK)
-
-
-class TokenDestroyView(views.APIView):
-    """
-    Use this endpoint to logout user (remove user authentication token).
-    """
-
-    permission_classes = settings.PERMISSIONS.token_destroy
-
-    def post(self, request):
-        utils.logout_user(request)
-        return Response(status=status.HTTP_204_NO_CONTENT)

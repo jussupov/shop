@@ -1,13 +1,14 @@
 from django.db import models
+
 from utilities.models import BaseModel
 from utilities.utils import unique_slug_generator
 
 
 class Category(BaseModel):
+
     title = models.CharField(max_length=255)
     parent = models.ForeignKey(
-        to="self", blank=True, null=True, on_delete=models.CASCADE,
-        related_name="child"
+        to="self", blank=True, null=True, on_delete=models.CASCADE, related_name="child"
     )
 
     class Meta:

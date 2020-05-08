@@ -27,7 +27,7 @@ class User(AbstractBaseUser):
 
     USERNAME_FIELD = "email"
 
-    REQUIRED_FIELD = [
+    REQUIRED_FIELDS = [
         "birth_day",
         "gender",
         "first_name",

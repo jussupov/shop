@@ -6,7 +6,7 @@ from rest_framework import serializers
 
 from category.models import Category
 
-from .models import Photo, Product, Specification
+from .models import Photo, Product, Specification, Comment
 
 
 class ParentCategorySerializer(serializers.ModelSerializer):
@@ -149,6 +149,11 @@ class CreateProductSerializer(serializers.HyperlinkedModelSerializer):
             Photo.objects.create(product=product, image=image_data)
         return product
 
+
+class CommentSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Comment
+        fields = "__all__"
 
 # class ProductSpecificationSerializer(serializers.ModelSerializer):
 #     class Meta:

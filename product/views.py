@@ -4,15 +4,18 @@ from django.views.decorators.cache import cache_page
 from django_filters.rest_framework import DjangoFilterBackend
 from drf_yasg.utils import swagger_auto_schema
 from rest_framework import filters
-from rest_framework.decorators import action
+from rest_framework.decorators import action, permission_classes
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
+from rest_framework.generics import ListCreateAPIView
+from rest_framework.permissions import IsAuthenticated
+from rest_framework import status
 
 from utilities.pagination import DefaultPagination
 
 from . import serializers as product_serializer
 from .filters import ProductFilter
-from .models import Product, Specification
+from .models import Product, Specification, Comment
 
 
 def get_client_ip(request):
@@ -23,9 +26,15 @@ def get_client_ip(request):
         ip = request.META.get("REMOTE_ADDR")
     return ip
 
+@swagger_auto_schema()
+class CommentView(ListCreateAPIView):
+    lookup_field = "product__slug"
+    serializer_class = product_serializer.CommentSerializer
+    queryset = Comment.objects.all()
+
+
 
 @swagger_auto_schema()
-@method_decorator(cache_page(60 * 15), name="dispatch")
 class ProductView(ModelViewSet):
     queryset = Product.objects.all()
     serializer_class = product_serializer.ListProductSerializer
@@ -45,6 +54,7 @@ class ProductView(ModelViewSet):
         "create": product_serializer.CreateProductSerializer,
     }
 
+    @method_decorator(cache_page(60 * 15))
     def list(self, request, **kwargs):
         queryset = self.filter_queryset(self.get_queryset())
         page = self.paginate_queryset(queryset)
@@ -75,6 +85,36 @@ class ProductView(ModelViewSet):
             return Response(data)
         serializer = self.get_serializer(queryset, many=True)
         return Response(serializer.data)
+
+    @action(detail=False, methods=["GET"])
+    def comments(self, request):
+        slug = request.GET.get("product")
+        if slug:
+            queryset = Comment.objects.filter(product__slug=slug, active=True)
+            serializer = product_serializer.CommentSerializer(queryset, many=True)
+            return Response(serializer.data)
+        return Response({"message": "Пустой"})
+
+    @action(detail=False, methods=["POST"], permission_classes=[IsAuthenticated])
+    def comment(self, request):
+        try:
+            slug = request.GET.get("product")
+            product = Product.objects.get(slug=slug)
+            
+            data = {
+                "user":request.user,
+                "product":product,
+                "body":request.data['body']
+            }
+
+            Comment.objects.create(**data)
+            print("created")
+
+            return Response({"message": "Ok"}, status=status.HTTP_200_OK)
+        except Exception:
+            return Response({"message": "Ошибка"}, status=status.HTTP_400_BAD_REQUEST)
+
+
 
     @action(detail=False, methods=["GET"])
     def specification(self, request):

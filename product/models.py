@@ -3,6 +3,8 @@ from django.db import models
 from category.models import Category
 from utilities.models import BaseModel, TimeAndActiveModel, TimeModel
 from utilities.utils import unique_slug_generator
+from account.models import User
+
 
 
 class Product(BaseModel):
@@ -49,6 +51,15 @@ class ValueSpecification(TimeModel):
 
     def __str__(self):
         return f"{self.category_spec_types} - {self.value}"
+
+
+class Comment(TimeModel):
+    product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name = "comments")
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name = "comments")
+    active = models.BooleanField(default=False)
+    body = models.TextField()
+    answer = models.TextField(null=True, blank=True)
+    
 
 #
 # class ProductSpecifications(TimeModel):

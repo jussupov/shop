@@ -58,7 +58,7 @@ class Comment(TimeModel):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name = "comments")
     active = models.BooleanField(default=False)
     body = models.TextField()
-    answer = models.TextField(null=True, blank=True)
+    answer = models.TextField(null=True, blank=True, default=None)
     
 
 #

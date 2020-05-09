@@ -151,9 +151,16 @@ class CreateProductSerializer(serializers.HyperlinkedModelSerializer):
 
 
 class CommentSerializer(serializers.ModelSerializer):
+    user = serializers.SerializerMethodField()
+
+
+    def get_user(self, obj):
+        return obj['user__email']
+
+
     class Meta:
         model = Comment
-        fields = "__all__"
+        fields = ["user", "body", "answer"]
 
 # class ProductSpecificationSerializer(serializers.ModelSerializer):
 #     class Meta:

@@ -90,7 +90,7 @@ class ProductView(ModelViewSet):
     def comments(self, request):
         slug = request.GET.get("product")
         if slug:
-            queryset = Comment.objects.filter(product__slug=slug, active=True)
+            queryset = Comment.objects.filter(product__slug=slug).values("id", "body", "user__email", "answer")
             serializer = product_serializer.CommentSerializer(queryset, many=True)
             return Response(serializer.data)
         return Response({"message": "Пустой"})

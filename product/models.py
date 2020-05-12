@@ -83,13 +83,3 @@ def answer(sender, instance, **kwargs):
             send.delay(subject="Optovichok ответ на вопрос", body=plain_message, email=emails, html_message=html_message)
         
     
-
-#
-# class ProductSpecifications(TimeModel):
-#     product = models.ForeignKey(
-#         Product, on_delete=models.CASCADE, related_name="specification"
-#     )
-#     value = models.ForeignKey(ValueSpecification, on_delete=models.CASCADE, related_name="value")
-#
-#     def __str__(self):
-#         return f"{self.product} - {self.category_spec_types}"

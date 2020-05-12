@@ -156,3 +156,9 @@ INCOME_SECRET_KEY = "9w9mb2QELG2SKReN"
 PAY_BOX_URL = "https://api.paybox.money/v4/payments"
 
 NON_IMAGE = "/media/no_product.png"
+
+from datetime import timedelta
+
+SIMPLE_JWT = {
+    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=60),
+}

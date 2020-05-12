@@ -4,6 +4,12 @@ from category.models import Category
 from utilities.models import BaseModel, TimeAndActiveModel, TimeModel
 from utilities.utils import unique_slug_generator
 from account.models import User
+from django.core.mail import send_mail
+from celery import shared_task
+from django.template.loader import render_to_string
+from django.utils.html import strip_tags
+from django.dispatch.dispatcher import receiver
+
 
 
 
@@ -59,6 +65,23 @@ class Comment(TimeModel):
     active = models.BooleanField(default=False)
     body = models.TextField()
     answer = models.TextField(null=True, blank=True, default=None)
+
+
+@shared_task()
+def send(subject, body, email, html_message):
+    send_mail(
+        subject, body, "webmaster@localhost", email, html_message=html_message,
+    )
+
+@receiver(models.signals.post_save, sender=Comment)
+def answer(sender, instance, **kwargs):
+    if not kwargs['created']:
+        if instance.answer and len(instance.answer) != 0:
+            emails = [instance.user.email]
+            html_message = render_to_string("answer-comment.html", {"text":instance.answer})
+            plain_message = strip_tags(html_message)
+            send.delay(subject="Optovichok ответ на вопрос", body=plain_message, email=emails, html_message=html_message)
+        
     
 
 #

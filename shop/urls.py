@@ -44,6 +44,7 @@ urlpatterns = [
     path("api/token", CustomTokenObtainPairView.as_view()),
     path("api/token/refresh", TokenRefreshView.as_view()),
     path("", include("account.urls")),
+    path("api/", include("order.urls"))
 ]
 
 

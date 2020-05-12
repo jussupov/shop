@@ -1,4 +1,4 @@
-from .views import OrderView
+from .views import OrderView, city
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
 
@@ -8,5 +8,6 @@ router.register("order", OrderView, basename="order")
 
 
 urlpatterns = [
-    path("", include(router.urls))
+    path("", include(router.urls)),
+    path("city", city)
 ]

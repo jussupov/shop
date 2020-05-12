@@ -58,6 +58,17 @@ class OrderView(ModelViewSet):
     def get_queryset(self):
         return Order.objects.filter(cart__user=self.request.user, cart__is_active=True)
 
+@api_view(["GET"])
+def city(request):
+    city = City.objects.all()
+    arr = []
+    for data in city:
+        obj = {
+            "id":data.id,
+            "title":data.title
+        }
+        arr.append(obj)
+    return Response(arr, status=status.HTTP_200_OK)
 
 @api_view(["POST"])
 def payment_status_webhook(request):
